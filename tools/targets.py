@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 from SCons.Script import ARGUMENTS
+from SCons.Tool import Tool
 from SCons.Variables import *
 from SCons.Variables.BoolVariable import _text2bool
 
@@ -128,7 +129,9 @@ def generate(env):
             if using_clang(env) and is_clang_type(env, "Apple"):
                 # Apple Clang, its linker doesn't like -s.
                 env.Append(LINKFLAGS=["-Wl,-S", "-Wl,-x", "-Wl,-dead_strip"])
-            elif is_clang_type(env, "clang"):
+            elif using_clang(env) and not is_clang_type(env, "clang"):
+                pass
+            else:
                 env.Append(LINKFLAGS=["-s"])
 
         if env["optimize"] == "speed":
